@@ -1,11 +1,12 @@
 import { state } from '@angular/animations';
 import { Component } from '@angular/core';
 import { Store, Action } from '@ngrx/store';
+import { AppState } from './app.reducers';
 import { DecrementarAction, IncrementarAction } from './contador/contador.actions';
 
-interface AppState { //voy a mandar al store, interface q dice q va a manejar el store
-  contador: number;
-}
+// interface AppState { voy a mandar al store, interface q dice q va a manejar el store
+//   contador: number;
+// }
 
 @Component({
   selector: 'app-root',
@@ -16,14 +17,11 @@ export class AppComponent {
   // title = 'redux-app';
 
   contador: number;
-
-  constructor(private store: Store<{contador: number}>){
-    this.store.subscribe( state =>
-      {
-        // console.log(state);
-        this.contador = state.contador;
-      });
-  }
+  // Store<{contador: number}>
+  constructor(private store: Store<AppState>){
+    this.store.select('contador')
+    .subscribe( contador => this.contador = contador);
+  }//  console.log(state);
 
   incrementar(){
     //this.contador ++;

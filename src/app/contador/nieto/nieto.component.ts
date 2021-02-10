@@ -1,4 +1,8 @@
-import { Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
+// import { Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
+import { Component, OnInit} from '@angular/core';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/app.reducers';
+import { ResetAction } from '../contador.actions';
 
 @Component({
   selector: 'app-nieto',
@@ -7,17 +11,33 @@ import { Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
 })
 export class NietoComponent implements OnInit {
 
-  @Input() contador:number; //tengo que recibir del padre el contador
-  @Output() contadorCambio = new EventEmitter<number>(); //EventEmitter emite un numero
+  // @Input() contador:number; tengo que recibir del padre el contador
+  // @Output() contadorCambio = new EventEmitter<number>(); EventEmitter emite un numero
 
-  constructor() { }
+  contador:number;
 
-  ngOnInit(): void {
+  constructor(private store: Store<AppState>) { }
+
+  ngOnInit() {
+    //suscribirnos para escuchar los cambios que pueda recibir ese contador
+    //o el estado en la propiedad del contador
+    //select para escuchcar solo al contador
+    this.store.select('contador')
+    .subscribe( contador => {
+      this.contador = contador;
+      console.log(contador);
+    });
   }
 
   reset(){
-    this.contador = 0;
-    this.contadorCambio.emit(0);
+    const accion = new ResetAction();
+    this.store.dispatch(accion); 
+
   }
+
+  // reset(){
+  //   this.contador = 0;
+  //   this.contadorCambio.emit(0);
+  // }
 
 }
